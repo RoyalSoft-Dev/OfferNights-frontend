@@ -18,6 +18,8 @@ import ThumbUpAltTwoToneIcon from '@mui/icons-material/ThumbUpAltTwoTone';
 import CommentTwoToneIcon from '@mui/icons-material/CommentTwoTone';
 import ShareTwoToneIcon from '@mui/icons-material/ShareTwoTone';
 import Text from 'src/components/Text';
+import { useSelector } from 'react-redux';
+import { StateType } from 'src/reducer/dataType';
 
 const CardActionsWrapper = styled(CardActions)(
   ({ theme }) => `
@@ -27,6 +29,8 @@ const CardActionsWrapper = styled(CardActions)(
 );
 
 function ActivityTab() {
+  const currentUser: any = useSelector((state: StateType) => state.auth.user);
+  
   return (
     <Card>
       <CardHeader
@@ -38,10 +42,10 @@ function ActivityTab() {
         }
         titleTypographyProps={{ variant: 'h4' }}
         subheaderTypographyProps={{ variant: 'subtitle2' }}
-        title="Allison Lipshutz"
+        title={currentUser.firstName + " " + currentUser.lastName}
         subheader={
           <>
-            Managing Partner,{' '}
+            {currentUser.type},{' '}
             <Link href="#" underline="hover">
               #software
             </Link>
@@ -49,13 +53,13 @@ function ActivityTab() {
             <Link href="#" underline="hover">
               #managers
             </Link>
-            , Google Inc.
+            , OfferNights.
           </>
         }
       />
       <Box px={3} pb={2}>
         <Typography variant="h4" fontWeight="normal">
-          Welcome to organizing your remote office for maximum productivity.
+          Welcome to our websites - OfferNights
         </Typography>
       </Box>
       <CardMedia
@@ -63,9 +67,9 @@ function ActivityTab() {
         image="/static/images/placeholders/covers/6.jpg"
         title="Card Cover"
       />
-      <Box p={3}>
+      {/* <Box p={3}>
         <Typography variant="h2" sx={{ pb: 1 }}>
-          Organizing Your Remote Office for Maximum Productivity
+          Organizing our websites - OfferNights
         </Typography>
         <Typography variant="subtitle2">
           <Link href="#" underline="hover">
@@ -73,7 +77,7 @@ function ActivityTab() {
           </Link>{' '}
           • 4 mins read
         </Typography>
-      </Box>
+      </Box> */}
       <Divider />
       <CardActionsWrapper
         sx={{

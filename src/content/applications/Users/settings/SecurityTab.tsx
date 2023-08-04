@@ -30,6 +30,13 @@ import {
 import DoneTwoToneIcon from '@mui/icons-material/DoneTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import { format, subHours, subWeeks, subDays } from 'date-fns';
+import isEmpty from 'src/validation/is-empty';
+import isEmail from 'src/validation/is-email';
+import { SnackbarProvider, enqueueSnackbar } from 'notistack';
+import { changePassword } from 'src/actions/authAction';
+import { useSelector } from 'react-redux';
+import { StateType } from 'src/reducer/dataType';
+import { useNavigate } from 'react-router';
 
 const ButtonError = styled(Button)(
   ({ theme }) => `
@@ -77,43 +84,86 @@ function SecurityTab() {
     setPage(0);
   };
 
-  const logs = [
-    {
-      id: 1,
-      browser: ' Safari/537.36',
-      ipaddress: '3.70.73.142',
-      location: 'United States',
-      date: subDays(new Date(), 2).getTime()
-    },
-    {
-      id: 2,
-      browser: 'Chrome/36.0.1985.67',
-      ipaddress: '138.13.136.179',
-      location: 'China',
-      date: subDays(new Date(), 6).getTime()
-    },
-    {
-      id: 3,
-      browser: 'Googlebot/2.1',
-      ipaddress: '119.229.170.253',
-      location: 'China',
-      date: subHours(new Date(), 15).getTime()
-    },
-    {
-      id: 4,
-      browser: 'AppleWebKit/535.1',
-      ipaddress: '206.8.99.49',
-      location: 'Philippines',
-      date: subDays(new Date(), 4).getTime()
-    },
-    {
-      id: 5,
-      browser: 'Mozilla/5.0',
-      ipaddress: '235.40.59.85',
-      location: 'China',
-      date: subWeeks(new Date(), 3).getTime()
+  // const logs = [
+  //   {
+  //     id: 1,
+  //     browser: ' Safari/537.36',
+  //     ipaddress: '3.70.73.142',
+  //     location: 'United States',
+  //     date: subDays(new Date(), 2).getTime()
+  //   },
+  //   {
+  //     id: 2,
+  //     browser: 'Chrome/36.0.1985.67',
+  //     ipaddress: '138.13.136.179',
+  //     location: 'China',
+  //     date: subDays(new Date(), 6).getTime()
+  //   },
+  //   {
+  //     id: 3,
+  //     browser: 'Googlebot/2.1',
+  //     ipaddress: '119.229.170.253',
+  //     location: 'China',
+  //     date: subHours(new Date(), 15).getTime()
+  //   },
+  //   {
+  //     id: 4,
+  //     browser: 'AppleWebKit/535.1',
+  //     ipaddress: '206.8.99.49',
+  //     location: 'Philippines',
+  //     date: subDays(new Date(), 4).getTime()
+  //   },
+  //   {
+  //     id: 5,
+  //     browser: 'Mozilla/5.0',
+  //     ipaddress: '235.40.59.85',
+  //     location: 'China',
+  //     date: subWeeks(new Date(), 3).getTime()
+  //   }
+  // ];
+
+  const currentUser: any = useSelector((state: StateType) => state.auth.user);
+
+  const [newPassword, setNewPassword] = useState({
+    currentPassword: '',
+    password: '',
+    confirmPassword: ''
+  })
+
+  const onChange = e => {
+    setNewPassword({
+      ...newPassword,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  const onPasswordChangeClick = e => {
+    e.preventDefault();
+
+    if (isEmpty(newPassword.currentPassword)) {
+      enqueueSnackbar('Please fill the current password.')
+      return;
     }
-  ];
+    if (isEmpty(newPassword.password)) {
+      enqueueSnackbar('Please fill the new password.')
+      return;
+    }
+    if (isEmpty(newPassword.confirmPassword)) {
+      enqueueSnackbar('Please fill the confirm password.')
+      return;
+    }
+    if (newPassword.password !== newPassword.confirmPassword) {
+      enqueueSnackbar('Please match new password and confirm password.')
+      return;
+    }
+    
+    const data = {
+      id: currentUser._id,
+      currentPassword: newPassword.currentPassword,
+      newPassword: newPassword.password
+    }
+    changePassword(data);
+  }
 
   return (
     <Grid container spacing={3}>
@@ -210,7 +260,13 @@ function SecurityTab() {
                 primary="Change Password"
                 secondary="You can change your password here"
               />
-              <Button size="large" variant="outlined">
+              <SnackbarProvider
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'center',
+                }}
+              ></SnackbarProvider>
+              <Button size="large" variant="outlined" onClick={onPasswordChangeClick}>
                 Change password
               </Button>
             </ListItem>
@@ -234,7 +290,7 @@ function SecurityTab() {
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={8} md={9}>
-                  <TextField name="brokerageName" value={''} variant="outlined" />
+                  <TextField name="currentPassword" type='password' value={newPassword.currentPassword} variant="outlined" onChange={onChange} />
                 </Grid>
                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
                   <Box pr={3} pt={1.5}>
@@ -242,7 +298,7 @@ function SecurityTab() {
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={8} md={9}>
-                  <TextField name="brokerageAddress" value={''} variant="outlined" />
+                  <TextField name="password" type='password' value={newPassword.password} variant="outlined" onChange={onChange} />
                 </Grid>
                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
                   <Box pr={3} pt={1.5}>
@@ -250,13 +306,13 @@ function SecurityTab() {
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={8} md={9}>
-                  <TextField name="brokerageAddress" value={''} variant="outlined" />
+                  <TextField name="confirmPassword" type='password' value={newPassword.confirmPassword} variant="outlined" onChange={onChange} />
                 </Grid>
               </Grid>
           </List>
         </Card>
       </Grid>
-      <Grid item xs={12}>
+      {/* <Grid item xs={12}>
         <Card>
           <CardHeader
             subheaderTypographyProps={{}}
@@ -317,7 +373,7 @@ function SecurityTab() {
             />
           </Box>
         </Card>
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 }

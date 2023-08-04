@@ -1,7 +1,7 @@
 import { Stack, Box, Button, Container, Grid, Typography, TextField, Select, MenuItem, InputLabel, SelectChangeEvent } from '@mui/material';
   import SendIcon from '@mui/icons-material/Send';
 
-import { Link as RouterLink } from 'react-router-dom';
+import { Link, Link as RouterLink } from 'react-router-dom';
 
 import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
@@ -266,18 +266,18 @@ function Hero() {
           >
             Sign Up
           </Button>
-          <Button
-            sx={{ ml: 2 }}
-            component="a"
-            target="_blank"
-            rel="noopener"
-            href="https://bloomui.com/product/tokyo-free-white-react-typescript-material-ui-admin-dashboard"
-            size="large"
-            variant="text"
-          >
-            Sign In
-          </Button>
-          
+          <Link to={'user/sign-in'}>
+            <Button
+              sx={{ ml: 2 }}
+              component="a"
+              target="_blank"
+              rel="noopener"
+              size="large"
+              variant="text"
+            >
+              Sign In
+            </Button>
+          </Link>
         </Grid>
       </Grid>
     </Container>

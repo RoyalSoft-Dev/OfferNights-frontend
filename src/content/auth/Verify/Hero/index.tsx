@@ -2,6 +2,8 @@ import { Stack, Box, Button, Container, Grid, Typography, TextField, Select, Men
 
 import { Link, useNavigate } from 'react-router-dom';
 
+import { useSelector } from 'react-redux';
+
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 
 import { useState } from 'react';
@@ -9,9 +11,12 @@ import { styled } from '@mui/material/styles';
 import { alignProperty } from '@mui/material/styles/cssUtils';
 
 import {signUp} from '../../../../actions/authAction';
+import { resendVerificationCode } from '../../../../actions/authAction';
+import { checkToken } from '../../../../actions/authAction';
 
 import isEmail from 'src/validation/is-email';
 import isEmpty from 'src/validation/is-empty';
+import { StateType } from 'src/reducer/dataType';
 
 const TypographyH1 = styled(Typography)(
   ({ theme }) => `
@@ -79,8 +84,12 @@ const TsAvatar = styled(Box)(
 `
 );
 
-function Hero(props) {
+function Hero() {
   const navigate: any = useNavigate()
+
+  const [token, setToken] = useState('');
+
+  const signUpInfo: any = useSelector((state: StateType) => state.auth.signUpInfo);
 
   const onBackClick = e => {
     e.preventDefault();
@@ -89,15 +98,18 @@ function Hero(props) {
 
   const onVerifyCheck = e => {
     e.preventDefault();
-    console.log(props.profile)
     alert('Verify OK')
+    checkToken(token)
   }
 
   const onChange = e => {
     setToken(e.target.value);
   }
+
+  const onResendClick = e => {
+    resendVerificationCode(signUpInfo.email)
+  }
   
-  const [token, setToken] = useState('');
 
   return (
     <Container maxWidth="lg" sx={{ textAlign: 'center' }}>
@@ -131,6 +143,17 @@ function Hero(props) {
             You can confirm the verification code for your email in Email Server and then you can inform us via below verification code field.
           </TypographyH2><br />
           <Stack>
+            <Link to={''} onClick={onResendClick}>
+              <TypographyH2
+                sx={{ lineHeight: 1.5, pb: 1.5 }}
+                variant="h4"
+                textAlign={'center'}
+                color="text.secondary"
+                fontWeight="normal"
+              >
+                Resend Verification Code to {signUpInfo.email}
+              </TypographyH2><br />
+            </Link>
             <TextField name="token" label="Verification Code" value={token} variant="outlined" onChange={onChange} /><br />
             <Button
               size="large"

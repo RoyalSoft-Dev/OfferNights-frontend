@@ -18,7 +18,7 @@ function Footer() {
       >
         <Box>
           <Typography variant="subtitle1">
-            &copy; 2022 - Tokyo Free White React Typescript Admin Dashboard
+            &copy; 2023 - OfferNights                
           </Typography>
         </Box>
         <Typography
@@ -27,13 +27,13 @@ function Footer() {
           }}
           variant="subtitle1"
         >
-          Crafted by{' '}
+          Made by SMiLe Development Team(SDT){' '}
           <Link
-            href="https://bloomui.com"
+            href="https://offernights.com"
             target="_blank"
             rel="noopener noreferrer"
           >
-            BloomUI.com
+            offernights.com
           </Link>
         </Typography>
       </Box>

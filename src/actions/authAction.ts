@@ -3,6 +3,7 @@ import setAuthToken from 'src/api/setAuthToken';
 import { useNavigate } from "react-router-dom";
 
 const API_BASE: string = 'http://localhost:5000/user';
+const API_VERIFY: string = 'http://localhost:5000/verify';
 
 // export const loadUser = (token) => (dispatch) => {
 //   axios
@@ -40,7 +41,29 @@ export const signUp = (data: {}) => (dispatch) => {
   //   })
 
   axios
-    .post(`${API_BASE}/email-verify`, data)
+    .post(`${API_VERIFY}/email-verify`, data)
+    .then(res => {
+      alert("Successfully verify...")
+    })
+    .catch(err => {
+      console.log(err.response.data)
+    })
+}
+
+export const resendVerificationCode = (data: string) => {
+  axios
+    .post(`${API_VERIFY}/token`, data)
+    .then(res => {
+      alert("Successfully verify...")
+    })
+    .catch(err => {
+      console.log(err.response.data)
+    })
+}
+
+export const checkToken = (data: string) => {
+  axios
+    .post(`${API_VERIFY}/check-token`, data)
     .then(res => {
       alert("Successfully verify...")
     })
@@ -90,4 +113,17 @@ export const signOut = () => dispatch => {
     type: 'LOGOUT',
     payload: null
   })
+}
+
+export const changePassword = (data: any) => {
+  const id: string = data.id;
+  console.log(id)
+  axios
+    .put(`${API_BASE}/change-password/${id}`, data)
+    .then(res => {
+      alert(res.data)
+    })
+    .catch(err => {
+      alert(err.response.data.error)
+    })
 }

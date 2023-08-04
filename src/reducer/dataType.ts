@@ -4,6 +4,7 @@ export interface StateType {
         isAuthenticated: boolean;
         loading: boolean;
         user: null;
+        signUpInfo: null;
     }
     error: {
         errors: null
