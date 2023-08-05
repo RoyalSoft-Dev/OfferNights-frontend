@@ -27,6 +27,20 @@ const Register = Loader(lazy(() => import('src/content/auth/Register')));
 const Login = Loader(lazy(() => import('src/content/auth/Login')));
 const Verify = Loader(lazy(() => import('src/content/auth/Verify')));
 
+// Management
+
+const Agent = Loader(
+  lazy(() => import('src/content/management/Agent'))
+);
+
+const Buyer = Loader(
+  lazy(() => import('src/content/management/Buyer'))
+);
+
+const Seller = Loader(
+  lazy(() => import('src/content/management/Seller'))
+);
+
 // Applications
 
 const Messenger = Loader(
@@ -210,11 +224,19 @@ const routes: RouteObject[] = [
     children: [
       {
         path: '',
-        element: <Navigate to="transactions" replace />
+        element: <Navigate to="my-offer" replace />
       },
       {
-        path: 'transactions',
-        element: <Transactions />
+        path: 'active-showing-agents',
+        element: <Agent />
+      },
+      {
+        path: 'buyers',
+        element: <Buyer />
+      },
+      {
+        path: 'sellers',
+        element: <Seller />
       },
       {
         path: 'profile',

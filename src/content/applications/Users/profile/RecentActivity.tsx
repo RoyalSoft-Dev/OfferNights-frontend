@@ -34,7 +34,7 @@ function RecentActivity() {
           <ShoppingBagTwoToneIcon />
         </AvatarPrimary>
         <Box pl={2} flex={1}>
-          <Typography variant="h3">Orders</Typography>
+          <Typography variant="h3">Agents</Typography>
 
           <Box pt={2} display="flex">
             <Box pr={8}>
@@ -53,7 +53,7 @@ function RecentActivity() {
                 variant="caption"
                 sx={{ fontSize: `${theme.typography.pxToRem(16)}` }}
               >
-                Failed
+                Usable
               </Typography>
               <Typography variant="h2">8</Typography>
             </Box>
@@ -66,7 +66,7 @@ function RecentActivity() {
           <FavoriteTwoToneIcon />
         </AvatarPrimary>
         <Box pl={2} flex={1}>
-          <Typography variant="h3">Favourites</Typography>
+          <Typography variant="h3">Seller</Typography>
 
           <Box pt={2} display="flex">
             <Box pr={8}>
@@ -75,7 +75,7 @@ function RecentActivity() {
                 variant="caption"
                 sx={{ fontSize: `${theme.typography.pxToRem(16)}` }}
               >
-                Products
+                Total
               </Typography>
               <Typography variant="h2">64</Typography>
             </Box>
@@ -85,7 +85,7 @@ function RecentActivity() {
                 variant="caption"
                 sx={{ fontSize: `${theme.typography.pxToRem(16)}` }}
               >
-                Lists
+                Usable
               </Typography>
               <Typography variant="h2">15</Typography>
             </Box>
@@ -98,7 +98,7 @@ function RecentActivity() {
           <StarTwoToneIcon />
         </AvatarPrimary>
         <Box pl={2} flex={1}>
-          <Typography variant="h3">Reviews</Typography>
+          <Typography variant="h3">Buyer</Typography>
 
           <Box pt={2} display="flex">
             <Box pr={8}>
@@ -117,7 +117,7 @@ function RecentActivity() {
                 variant="caption"
                 sx={{ fontSize: `${theme.typography.pxToRem(16)}` }}
               >
-                Useful
+                Usable
               </Typography>
               <Typography variant="h2">21</Typography>
             </Box>

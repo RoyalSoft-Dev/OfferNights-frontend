@@ -11,8 +11,12 @@ import {
   CardMedia,
   Avatar,
   Select,
-  MenuItem
+  MenuItem,
+  Modal
 } from '@mui/material';
+
+import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet'
+import 'leaflet/dist/leaflet.css'
 
 import { styled } from '@mui/material/styles';
 
@@ -26,12 +30,25 @@ import Label from 'src/components/Label';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { StateType, UserType } from 'src/reducer/dataType';
-import { useState } from 'react';
+import { useState, useRef, useMemo, useCallback } from 'react';
 import {editProfile} from 'src/actions/authAction'
+
 
 const Input = styled('input')({
   display: 'none'
 });
+
+const style = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '70%',
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
 const AvatarWrapper = styled(Card)(
   ({ theme }) => `
@@ -91,12 +108,41 @@ const CardCoverAction = styled(Box)(
 `
 );
 
+function MapClickHandler() {
+  const map = useMapEvents({
+    click: (e) => {
+      // Handle the mouse click event here
+      console.log('Mouse clicked at:', e.latlng);
+    },
+  });
+
+  return null;
+}
+
 function EditProfileTab() {
   const navigate: any = useNavigate();
   const dispatch: any = useDispatch();
 
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const eventHandlers = useMemo(
+    () => ({
+      click() {
+        alert("sdfsdf")
+      },
+    }),
+    [],
+  )
+
   const profile: UserType = useSelector((state: StateType) => state.auth.user);
   const token: string = useSelector((state: StateType) => state.auth.token)
+
+  const [center, setCenter] = useState({ lat: -4.043477, lng: 39.668205 })
+  const ZOOM_LEVEL = 9
+  const mapRef = useRef()
+  // const [map, setMap] = useState(null)
 
   const [updatePossible, setUpdatePossible] = useState({
     personal: true,
@@ -145,7 +191,7 @@ function EditProfileTab() {
   const user = {
     savedCards: 7,
     name: 'Catherine Pike',
-    coverImg: '/static/images/background/profile.jpg',
+    coverImg: '/static/images/background/map.png',
     avatar: '/static/images/avatars/main.jpg',
     description:
       "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage",
@@ -161,6 +207,14 @@ function EditProfileTab() {
       ...updatePossible,
       personal: !updatePossible.personal
     })
+  }
+
+  const onPhoneVerifyClick = e => {
+    e.preventDefault();
+  }
+
+  const onEmailVerifyClick = e => {
+    e.preventDefault();
   }
 
   return (
@@ -206,7 +260,7 @@ function EditProfileTab() {
                     value={updateProfile.type}
                     name='type'
                     label="*Type"
-                    disabled={updatePossible.personal}
+                    disabled={true}
                     onChange={onChange}
                   >
                     <MenuItem value={'agent'}>Agent</MenuItem>
@@ -278,7 +332,10 @@ function EditProfileTab() {
                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
                   <Box pr={3} pt={1.5}>
                     *Cell Phone:
-                  </Box>
+                  </Box><br />
+                  <Button variant="text" onClick={onEmailVerifyClick} startIcon={<DownloadDoneOutlinedIcon />}>
+                    Verify
+                  </Button><br />
                 </Grid>
                 <Grid item xs={12} sm={8} md={9}>
                   <TextField type='number' name="cell" disabled={updatePossible.personal} value={updateProfile.cell} onChange={onChange} variant="outlined" />
@@ -286,7 +343,10 @@ function EditProfileTab() {
                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
                   <Box pr={3} pt={1.5}>
                     *Email:
-                  </Box>
+                  </Box><br />
+                  <Button variant="text" onClick={onPhoneVerifyClick} startIcon={<DownloadDoneOutlinedIcon />}>
+                    Verify
+                  </Button><br />
                 </Grid>
                 <Grid item xs={12} sm={8} md={9}>
                   <TextField type='email' name="email" disabled={updatePossible.personal} value={updateProfile.email} onChange={onChange} variant="outlined" />
@@ -296,7 +356,8 @@ function EditProfileTab() {
           </CardContent>
         </Card>
       </Grid>
-      <Grid item xs={12}>
+      {profile.type == 'agent' ? (
+        <Grid item xs={12}>
         <Card>
           <Box
             p={3}
@@ -317,7 +378,7 @@ function EditProfileTab() {
             </Button> */}
           </Box>
           <Divider />
-          <CardContent sx={{ p: 4 }}>
+            <CardContent sx={{ p: 4 }}>
             <Typography variant="subtitle2">
               <Grid container spacing={1}>
                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
@@ -365,52 +426,8 @@ function EditProfileTab() {
           </CardContent>
         </Card>
       </Grid>
-      <Grid item xs={12}>
-        <Card>
-          <Box
-            p={3}
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <Box>
-              <Typography variant="h4" gutterBottom>
-                Picture Information
-              </Typography>
-              <Typography variant="subtitle2">
-                Manage details related to your associated picture information
-              </Typography>
-            </Box>
-            {/* <Button variant="text" startIcon={<EditTwoToneIcon />}>
-              Edit
-            </Button> */}
-          </Box>
-          <Divider />
-          <CardContent sx={{ p: 4 }}>
-            <Typography variant="subtitle2">
-              <Grid container spacing={1}>
-                <Grid item xs={12} sm={8} md={9}>
-                <CardCover>
-                  <CardMedia image={user.coverImg} />
-                  <CardCoverAction>
-                    <Input id="change-cover" name='pictures' onChange={onChange} type="file" />
-                    <label htmlFor="change-cover">
-                      <Button
-                        startIcon={<UploadTwoToneIcon />}
-                        variant="contained"
-                        component="span"
-                      >
-                        Upload Picture
-                      </Button>
-                    </label>
-                  </CardCoverAction>
-                </CardCover>  
-                </Grid>
-              </Grid>
-            </Typography>
-          </CardContent>
-        </Card>
-      </Grid>
+      ) : ''}
+      
       <Grid item xs={12}>
         <Card>
           <Box

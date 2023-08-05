@@ -343,7 +343,7 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to={isAuthenticated == false ? "/user/sign-in" : "/components/active-showing-agents"}
+                  to={isAuthenticated == false ? "/user/sign-in" : "/management/active-showing-agents"}
                   startIcon={<FilterVintageTwoToneIcon />}
                 >
                   Active Showing Agents
@@ -354,7 +354,7 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to={isAuthenticated == false ? "/user/sign-in" : "/components/buyers"}
+                  to={isAuthenticated == false ? "/user/sign-in" : "/management/buyers"}
                   startIcon={<HowToVoteTwoToneIcon />}
                 >
                   Buyers
@@ -365,7 +365,7 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to={isAuthenticated == false ? "/user/sign-in" : "/components/sellers"}
+                  to={isAuthenticated == false ? "/user/sign-in" : "/management/sellers"}
                   startIcon={<LocalPharmacyTwoToneIcon />}
                 >
                   Sellers

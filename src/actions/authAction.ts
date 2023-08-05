@@ -72,7 +72,7 @@ export const checkToken = (data: string) => {
     })
 }
 
-export const editProfile = (id: string, token: string, data: {}) => (dispatch) => {
+export const editProfile = (id: string, token: string, data: any) => (dispatch) => {
   axios
     .put(`${API_BASE}/edit-profile/${id}`, data)
     .then(res => {
