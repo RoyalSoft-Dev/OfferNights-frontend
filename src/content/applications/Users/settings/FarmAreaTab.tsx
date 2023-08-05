@@ -15,7 +15,7 @@ import {
   Modal
 } from '@mui/material';
 
-import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, useMap, Circle, useMapEvents, Tooltip } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 
 import { styled } from '@mui/material/styles';
@@ -29,8 +29,9 @@ import Label from 'src/components/Label';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { StateType, UserType } from 'src/reducer/dataType';
-import { useState, useRef, lazy, Suspense } from 'react';
+import { useState, useRef, lazy, Suspense, useMemo } from 'react';
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import axios from 'axios';
 
 const Loader = (Component) => (props) =>
   (
@@ -77,27 +78,71 @@ const CardCoverAction = styled(Box)(
 `
 );
 
-function MapClickHandler() {
-  const map = useMapEvents({
-    click: (e) => {
-      // Handle the mouse click event here
-      console.log('Mouse clicked at:', e.latlng);
-    },
-  });
-
-  return null;
-}
-
 function FarmAreaTab() {
   const navigate: any = useNavigate();
+  const dispatch: any = useDispatch();
+  const [position, setPosition] = useState({
+    lat: '',
+    lng: ''
+  })
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const fillBlueOptions = { fillColor: 'red' }
+
+  const [mapInfo, setMapInfo] = useState({
+    lat: null,
+    lng: null,
+    address: null,
+    code: null
+  })
+
   const [center, setCenter] = useState({ lat: -4.043477, lng: 39.668205 })
   const ZOOM_LEVEL = 9
   const mapRef = useRef()
+
+  const MapClickHandler = () => {
+    let map = useMapEvents({
+      click: async (e) => {
+        const { lat, lng } = e.latlng;
+  
+        try {
+          const response = await axios.get(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+          );
+  
+          const address = response.data.address;
+          const postalCode = response.data.address.postcode;
+          console.log('latitude', lat)
+          console.log('longitude', lng)
+          console.log('address', address)
+
+          setPosition({
+            lat: lat,
+            lng: lng
+          })
+
+          setMapInfo({
+            lat: lat,
+            lng: lng,
+            address: address,
+            code: postalCode
+          })
+
+        } catch (error) {
+          console.log('Error', error);
+        }
+      },
+    });
+  
+    return null;
+  }
+
+  const onAddLocation = e => {
+    dispatch()
+  }
 
   const onSaveClick = e => {
     e.preventDefault();
@@ -149,11 +194,24 @@ function FarmAreaTab() {
               <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                 You can select your active area. And then you can click Add button.
               </Typography>
+
               <MapContainer center={center} style={{ height: '600px', width: '100%' }} zoom={ZOOM_LEVEL} ref={mapRef}>
+                {/* <Marker
+                  position={position}>
+                </Marker> */}
+                <Circle center={position} pathOptions={{color: 'red'}}>
+                </Circle>
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 <MapClickHandler />
-                {/* <Marker position={[51.505, -0.09]} /> */}
-              </MapContainer>
+              </MapContainer><br />
+              
+              <Button
+                startIcon={<UploadTwoToneIcon />}
+                variant="contained"
+                onClick={onAddLocation}
+              >
+                Add Location
+              </Button>
             </Box>
           </Modal>
           <CardContent sx={{ p: 4 }}>
